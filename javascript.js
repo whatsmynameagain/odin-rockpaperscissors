@@ -15,38 +15,27 @@ function getComputerChoice() {
     }
 }
 
-//assume both arguments are correct, first letter capitalized
+//Assume both arguments are correct, first letter capitalized
+//Trying out ternary operations and string literals 
 function playRound(playerSelection, computerSelection) {
     let result;
-    
     if (playerSelection == computerSelection) {
         return "Tie";
     } else {
         switch (playerSelection) {
             case "Rock":
-                if (computerSelection == "Paper") {
-                    return loseString;
-                } else if (computerSelection == "Scissors") {
-                    return winString;
-                }
+                result = computerSelection == "Paper" ? "Lose" : "Win";
                 break;
             case "Paper":
-                if (computerSelection == "Scissors") {
-                    return loseString;
-                } else if (computerSelection == "Rock") {
-                    return winString;
-                }
+                result = computerSelection == "Scissors" ? "Lose" : "Win";
                 break;
             case "Scissors":
-                if (computerSelection == "Rock") {
-                    return loseString;
-                } else if (computerSelection == "Paper") {
-                    return winString;
-                }
+                result = computerSelection == "Rock" ? "Lose" : "Win";
                 break;
         }
     }
-    return `You ${result}! ${playerSelection} beats ${computerSelection}`;
+    return result.charAt(0) == "W" 
+        ? `You ${result}! ${playerSelection} beats ${computerSelection}`
+        : `You ${result}! ${computerSelection} beats ${playerSelection}`;
+   
 }
-
-console.log(playRound("Scissors", "Rock"))

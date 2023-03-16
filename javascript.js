@@ -40,7 +40,9 @@ function playRound(playerSelection, computerSelection) {
 
 //not implemented: best out of x (ending the game early)
 function game() {
-    let capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1, text.length+1).toLowerCase();
+    let capitalize = (text) => text != null 
+        ? text.charAt(0).toUpperCase() + text.slice(1, text.length+1).toLowerCase()
+        : ""; //in case of getting null, return empty string
     let playerChoice, roundResult;
     let playerScore = 0, computerScore = 0;
     const rounds = 5;

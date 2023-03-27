@@ -4,13 +4,10 @@ function getComputerChoice() {
     switch (Math.floor(Math.random() * 3)){
         case 0:
             return "Rock";
-            break;
         case 1:
             return "Paper";
-            break;
         case 2: 
             return "Scissors";
-            break;
     }
 }
 
@@ -34,51 +31,88 @@ function playRound(playerSelection, computerSelection) {
         }
     }
     return result.charAt(0) == "W" 
-        ? `You ${result}! ${playerSelection} beats ${computerSelection}`
-        : `You ${result}! ${computerSelection} beats ${playerSelection}`;
+        ? `You ${result} this round! ${playerSelection} beats ${computerSelection}`
+        : `You ${result} this round! ${computerSelection} beats ${playerSelection}`;
 }
 
-//not implemented: best out of x (ending the game early)
-function game() {
-    let capitalize = (text) => text != null 
-        ? text.charAt(0).toUpperCase() + text.slice(1, text.length+1).toLowerCase()
-        : ""; //in case of getting null, return empty string
-    let playerChoice, roundResult;
-    let playerScore = 0, computerScore = 0;
-    const rounds = 5;
-    for (let i = 0; i < rounds; i++) { 
-        console.log("--- Rock, Paper, Scissors ---");
-        console.log(`--- Current Score: Player(${playerScore}), Computer(${computerScore})`);
-        console.log(`--- Round ${i+1} out of ${rounds} ---`);
-        let computerChoice = getComputerChoice();
-        while (playerChoice == null) {
-            playerChoice = capitalize(prompt("Enter your choice: "));
-            if (playerChoice != "Rock" && playerChoice != "Paper" && playerChoice != "Scissors") {
-                console.log("Invalid input. Try again")
-                playerChoice = null;
-            }
-        }
-        console.log(`You chose ${playerChoice} | The computer chose ${computerChoice}`);
-        roundResult = playRound(playerChoice, computerChoice);
-        if (roundResult.charAt(4) == "W") {
-            playerScore++;
-        }
-        else if (roundResult.charAt(4) == "L"){
-            computerScore++;
-        }
-        console.log(roundResult);
-        playerChoice = null;
-    };
-    console.log("\n");
-    console.log(`Final score: Player(${playerScore}), Computer(${computerScore})`)
-    if (playerScore == computerScore) {
-        console.log("It's a Tie");
-    } else if (playerScore < computerScore) {
-        console.log("You Lose");
-    } else {
-        console.log("You Win");
+
+function onButtonClick(event) {
+    computerChoice = getComputerChoice();
+    playerChoice = event.target.innerText; //get the text value from the button that was pressed
+    roundResult = playRound(event.target.innerText, computerChoice);
+    
+    if (roundResult.charAt(4) == "W") {
+        playerScore++;
     }
-    console.log("Game Over");
+    else if (roundResult.charAt(4) == "L"){
+        computerScore++;
+    };
+    if (selections.style.visibility === "hidden") { selections.style.visibility = "visible" };
+    
+    if (playerScore == 5 || computerScore == 5) {
+        if (result.style.visibility === "hidden") { 
+            result.style.visibility = "visible";
+            if (playerScore == computerScore) {
+                result.textContent = "It's a Tie";
+            } else if (playerScore < computerScore) {
+                result.textContent = "You Lose";
+            } else {
+                result.textContent = "You Win";
+            }
+        };
+        
+        resetBtn.style.display = "initial";
+        [rockBtn, paperBtn, scissorsBtn].forEach((button) => {
+            button.style.display = "none";
+        });
+    }
+    updateInfo();
+    currentRound++;
+
 }
 
-game();
+function updateInfo() {
+    roundCounter.textContent = `Round ${currentRound}`;
+    scoreBoard.textContent = `Current Score: Player(${playerScore}) - Computer(${computerScore})`;
+    selections.textContent = roundResult;
+    statusInfo.textContent = `You chose ${playerChoice} | The computer chose ${computerChoice}`
+}
+
+function resetGame() {
+    [rockBtn, paperBtn, scissorsBtn].forEach((button) => {
+        button.style.display = "initial";
+    });
+    selections.style.visibility = "hidden";
+    result.style.visibility = "hidden";
+    resetBtn.style.display = "none";
+    currentRound = 1, playerScore = 0, computerScore = 0;
+    updateInfo();
+    roundCounter.textContent = "";
+    statusInfo.textContent = "Select your... hand?";
+
+}
+
+let playerChoice, computerChoice, roundResult;
+let playerScore = 0, computerScore = 0;
+let currentRound = 1;
+
+const roundCounter = document.getElementById("rounds"); //trying out the id method
+const scoreBoard = document.querySelector("#score");
+const statusInfo = document.querySelector("#status");
+const rockBtn = document.querySelector("#rock");
+const paperBtn = document.querySelector("#paper");
+const scissorsBtn = document.querySelector("#scissors");
+const selections = document.querySelector("#selections");
+const result = document.querySelector("#result");
+const resetBtn = document.querySelector("#reset");
+
+[rockBtn, paperBtn, scissorsBtn].forEach((button) => {
+    button.addEventListener("click", onButtonClick);
+})
+
+resetBtn.addEventListener("click", () => resetGame()); //simplest way to reset the game
+
+selections.style.visibility = "hidden";
+result.style.visibility = "hidden";
+resetBtn.style.display = "none";
+
